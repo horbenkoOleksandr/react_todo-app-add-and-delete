@@ -8,10 +8,10 @@ export const getTodos = () => {
 };
 
 export const createTodoApi = (todo: Omit<Todo, 'id'>) => {
-  return client.post<Todo>('/todos', todo)
+  return client.post<Todo>('/todos', todo);
 };
 
 export const deleteTodoApi = (todoId: number) => {
-  return client.delete(`/todos/${todoId}`)
-}
+  return client.delete(`/todos/${todoId}`);
+};
 // Add more methods here

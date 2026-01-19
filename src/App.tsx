@@ -103,9 +103,7 @@ export const App: React.FC = () => {
     const completedTodo = todos.filter(todo => todo.completed);
 
     setIsLoadingTodos(true);
-    Promise.allSettled(
-      completedTodo.map(todo => deleteTodoApi(todo.id))
-    )
+    Promise.allSettled(completedTodo.map(todo => deleteTodoApi(todo.id)))
       .then(res => {
         const successTodo = completedTodo
           .filter((_, ind) => res[ind].status === 'fulfilled')

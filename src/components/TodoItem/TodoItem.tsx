@@ -15,11 +15,9 @@ export const TodoItem: React.FC<Props> = ({
   onDeleteTodo,
 }) => {
   const todoCompleted = todo.completed ? 'completed' : '';
+
   return (
-    <div
-      data-cy="Todo"
-      className={`todo ${todoCompleted}`}
-    >
+    <div data-cy="Todo" className={`todo ${todoCompleted}`}>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="todo__status-label">
         <input
