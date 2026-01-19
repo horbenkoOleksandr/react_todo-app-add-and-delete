@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { USER_ID } from './api/todos';
-import { client } from './utils/fetchClient';
+import { getTodos, createTodoApi, deleteTodoApi } from './api/todos';
 import { TodoHeader } from './components/TodoHeader';
 import { TodoFooter } from './components/TodoFooter/TodoFooter';
 import { TodoList } from './components/TodoList';
@@ -24,8 +24,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     setErrorMessages([]);
-    client
-      .get<Todo[]>(`/todos?userId=${USER_ID}`)
+    getTodos()
       .then(todosFromServer => {
         setTodos(todosFromServer);
       })
@@ -38,7 +37,7 @@ export const App: React.FC = () => {
         setIsLoadingTodos(false);
       });
   }, []);
- 
+
   const addTodo = (title: string, onSuccess?: () => void) => {
     if (title.trim() === '') {
       setErrorMessages([TodoError.EmptyTitle]);
@@ -48,18 +47,16 @@ export const App: React.FC = () => {
       return;
     }
 
-    const temporaryTodo: Todo = {
-      id: 0,
+    const temporaryTodo: Omit<Todo, 'id'> = {
       userId: USER_ID,
       title: title.trim(),
       completed: false,
     };
 
-    setTempTodo(temporaryTodo);
+    setTempTodo({ ...temporaryTodo, id: 0 });
     setIsLoadingTodos(true);
 
-    client
-      .post<Todo>('/todos', temporaryTodo)
+    createTodoApi(temporaryTodo)
       .then(createdTodo => {
         setTodos(prevTodo => [...prevTodo, createdTodo]);
         setTempTodo(null);
@@ -87,8 +84,7 @@ export const App: React.FC = () => {
   const deleteTodo = (todoId: number) => {
     setLoadingTodoIds(prev => [...prev, todoId]);
     setIsLoadingTodos(true);
-    client
-      .delete(`/todos/${todoId}`)
+    deleteTodoApi(todoId)
       .then(() => {
         setTodos(prevTodo => prevTodo.filter(todo => todo.id !== todoId));
       })
@@ -108,7 +104,7 @@ export const App: React.FC = () => {
 
     setIsLoadingTodos(true);
     Promise.allSettled(
-      completedTodo.map(todo => client.delete(`/todos/${todo.id}`)),
+      completedTodo.map(todo => deleteTodoApi(todo.id))
     )
       .then(res => {
         const successTodo = completedTodo

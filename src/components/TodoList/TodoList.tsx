@@ -7,13 +7,12 @@ type Props = {
   todos: Todo[];
   isLoadingTodos: boolean;
   filter: FilterTodo;
-  loadingTodoIds: number[]
+  loadingTodoIds: number[];
   onToggle: (id: number) => void;
   onDeleteTodo: (id: number) => void;
 };
 export const TodoList: React.FC<Props> = ({
   todos,
-  isLoadingTodos,
   filter,
   loadingTodoIds,
   onToggle,
